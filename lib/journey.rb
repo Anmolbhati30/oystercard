@@ -1,20 +1,26 @@
 class Journey
-  attr_reader :entry_station, :exit_station
+  PENALTY_CHARGE = 6
+  attr_reader :start, :finish
 
   def initialize
-    @entry_station
-    @exit_station
+    @start
+    @finish
   end
 
-  def enter_at(station)
-    @entry_station = station
+  def start_at(station)
+    @start = station
+  end
+  
+  def finish_at(station)
+    @finish = station
   end
 
-  def exit_at(station)
-    @exit_station = station
+  def fare
+    PENALTY_CHARGE
   end
+
 
   def create_record
-    @journeys.push({ entry: @entry_station, exit: exit_station })
+    return { start: @start, finish: @finish }
   end
 end
