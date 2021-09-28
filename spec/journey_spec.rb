@@ -3,23 +3,38 @@ require "journey"
 describe Journey do
   let!(:kings_cross) { instance_double(Station, :zone => 1, name: "Kings Cross") }
   let!(:victoria) { instance_double(Station, :zone => 1, name: "Victoria") }
-  describe "#enter_at" do
-    it "stores an entry station" do
-      subject.enter_at(kings_cross)
-      expect(subject.entry_station).to eq kings_cross
+  
+  describe "#start_at" do
+    context "when valid journey" do 
+      it "stores the entry station" do
+        subject.start_at(kings_cross)
+        expect(subject.start).to eq kings_cross
+      end
+    end 
+  end
+
+  describe "#end_at" do
+    context "when valid journey" do
+      it "stores the exit station" do
+        expect(subject.finish_at(victoria)).to eq victoria
+      end
     end
   end
-  describe "#exit_at" do
-    it "stores an exit station" do
-      subject.exit_at(victoria)
-      expect(subject.exit_station).to eq victoria
+
+  describe "#fare" do
+    context "when invalid journey" do
+      it "penalises if exiting without entering" do
+        subject.finish_at(victoria)
+        expect(subject.fare).to eq described_class::PENALTY_CHARGE
+      end
     end
   end
+
   describe "#create_record" do
     it "creates a journey record" do
-      subject.enter_at(kings_cross)
-      subject.exit_at(victoria)
-      expected_journey = { entry: kings_cross, exit: victoria }
+      subject.start_at(kings_cross)
+      subject.finish_at(victoria)
+      expected_journey = { start: kings_cross, finish: victoria }
       expect(subject.create_record).to eq expected_journey
     end
   end
