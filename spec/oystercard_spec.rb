@@ -73,7 +73,7 @@ describe Oystercard do
       end
 
       it "remembers entry station" do
-        expect(subject.entry_station).to eq kings_cross
+        expect(subject.started_at).to eq kings_cross
       end
     end
   end

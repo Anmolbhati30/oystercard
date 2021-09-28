@@ -1,20 +1,20 @@
+require_relative 'journey'
+
 class Oystercard
   BALANCE_LIMIT = 90
   MIN_BALANCE = 1
-  attr_reader :balance, :entry_station, :journeys
+  attr_reader :balance, :journeys
 
-  def initialize
+  def initialize(journey = Journey.new)
     @balance = 0
     @error_messages = {
       valid_amount: "Please provide a valid amount",
       exceed_limit: "Sorry, you cannot exceed the balance limit of £#{BALANCE_LIMIT}",
       insufficient_fare_balance: "Sorry, your balance is not enough to cover the fare",
-      in_journey: "You are already in a journey",
-      not_in_journey: "You are not in a journey",
       insufficient_min_balance: "Sorry, you don't have the minimum balance required of £#{MIN_BALANCE}",
     }
-    @entry_station
     @journeys = []
+    @journey = journey
   end
 
   def top_up(amount)
@@ -24,20 +24,22 @@ class Oystercard
   end
 
   def touch_in(entry_station)
-    fail @error_messages[:in_journey] if in_journey?
     fail @error_messages[:insufficient_min_balance] if fare_exceeds?(MIN_BALANCE)
-    @entry_station = entry_station
+    @journey.start_at(entry_station)
   end
 
   def touch_out(exit_station)
-    fail @error_messages[:not_in_journey] unless in_journey?
-    deduct(MIN_BALANCE)
+    deduct(@journey.fare)
     save_journey(exit_station)
     @entry_station = nil
   end
 
   def in_journey?
-    @entry_station != nil
+    @journey.start != nil
+  end
+
+  def started_at
+    @journey.start
   end
 
   private
