@@ -59,7 +59,4 @@ class Oystercard
     @balance < fare
   end
 
-  def save_journey(exit_station)
-    @journeys.push({entry: @entry_station, exit: exit_station})
-  end
 end

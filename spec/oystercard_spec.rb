@@ -52,14 +52,14 @@ describe Oystercard do
         expect { subject.touch_in(kings_cross) }.to raise_error message
       end
       
-      it "raises error when already in journey" do
-        message = "You are already in a journey"
+      # it "raises error when already in journey" do
+      #   message = "You are already in a journey"
   
-        subject.top_up(described_class::MIN_BALANCE)
-        subject.touch_in(kings_cross)
+      #   subject.top_up(described_class::MIN_BALANCE)
+      #   subject.touch_in(kings_cross)
   
-        expect { subject.touch_in(kings_cross) }.to raise_error message
-      end
+      #   expect { subject.touch_in(kings_cross) }.to raise_error message
+      # end
     end
     
     context "when no errors" do
@@ -79,13 +79,13 @@ describe Oystercard do
   end
 
   describe "#touch_out" do
-    context "when errors" do 
-      it "raises error when not in journey" do
-        message = "You are not in a journey"
+    # context "when errors" do 
+    #   it "raises error when not in journey" do
+    #     message = "You are not in a journey"
 
-        expect { subject.touch_out(victoria) }.to raise_error message
-      end
-    end
+    #     expect { subject.touch_out(victoria) }.to raise_error message
+    #   end
+    # end
 
     context "when no errors" do
       before(:each) do
