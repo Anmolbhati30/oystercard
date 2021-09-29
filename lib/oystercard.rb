@@ -30,7 +30,6 @@ class Oystercard
     # fail @error_messages[:in_journey] if in_journey?
     fail @error_messages[:insufficient_min_balance] if fare_exceeds?(MIN_BALANCE)
     @current_journey = @journey.new(entry_station)
-    @journey.enter_at(entry_station)
     # @entry_station = entry_station
   end
 
@@ -42,7 +41,7 @@ class Oystercard
   end
 
   def in_journey?
-    @journey.start != nil
+    !!@current_journey
   end
 
   def started_at
