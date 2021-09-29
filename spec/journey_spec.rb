@@ -4,23 +4,26 @@ require "station"
 describe Journey do
   let!(:kings_cross) { instance_double(Station, :zone => 1, name: "Kings Cross") }
   let!(:victoria) { instance_double(Station, :zone => 1, name: "Victoria") }
-  describe "#enter_at" do
-    it "stores an entry station" do
-      subject.enter_at(kings_cross)
+  describe "#initialize" do
+    it "defaults entry station to nil" do
+      expect(subject.entry_station).to eq nil
+    end
+    it "takes an entry station" do
+      subject = described_class.new(kings_cross)
       expect(subject.entry_station).to eq kings_cross
     end
   end
-  describe "#exit_at" do
-    it "stores an exit station" do
-      subject.exit_at(victoria)
-      expect(subject.exit_station).to eq victoria
+  describe "#finish" do
+    it "finishes a journey at given station" do
+      expected_output = { start: kings_cross, finish: victoria }
+      expect(subject.finish(victoria)).to eq expected_output
     end
   end
   describe "#create_record" do
     it "creates a journey record" do
       subject.enter_at(kings_cross)
       subject.exit_at(victoria)
-      expected_journey = { entry: kings_cross, exit: victoria }
+      expected_journey = { start: kings_cross, finish: victoria }
       expect(subject.create_record).to eq expected_journey
     end
   end

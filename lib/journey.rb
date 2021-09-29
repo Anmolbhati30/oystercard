@@ -4,24 +4,21 @@ class Journey
   PENALTY_CHARGE = 6
   MIN_CHARGE = 1
 
-  def initialize
-    @entry_station
+  def initialize(entry_station = nil)
+    @entry_station = entry_station
     @exit_station
   end
 
-  def enter_at(station)
-    @entry_station = station
-  end
-
-  def exit_at(station)
-    @exit_station = station
-  end
-
-  def create_record
-    { entry: @entry_station, exit: exit_station }
+  def finish(exit_station)
+    @exit_station = exit_station
+    return self
   end
 
   def fare
-    @entry_station && @exit_station ? MIN_CHARGE : PENALTY_CHARGE
+    complete? ? MIN_CHARGE : PENALTY_CHARGE
+  end
+
+  def complete?
+    @entry_station && @exit_station
   end
 end
