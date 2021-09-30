@@ -37,7 +37,6 @@ class Oystercard
     finished_journey = @current_journey.finish(exit_station)
     deduct(finished_journey.fare)
     @journeys.push(finished_journey)
-    p @journeys
     @current_journey = nil
     return finished_journey
   end
