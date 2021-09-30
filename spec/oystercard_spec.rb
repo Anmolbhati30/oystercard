@@ -51,35 +51,35 @@ describe Oystercard do
         message = "Sorry, you don't have the minimum balance required of £#{described_class::MIN_BALANCE}"
         expect { subject.touch_in(kings_cross) }.to raise_error message
       end
-      
+
       # it "raises error when already in journey" do
       #   message = "You are already in a journey"
-  
+
       #   subject.top_up(described_class::MIN_BALANCE)
       #   subject.touch_in(kings_cross)
-  
+
       #   expect { subject.touch_in(kings_cross) }.to raise_error message
       # end
     end
-    
+
     context "when no errors" do
       before(:each) do
         subject.top_up(described_class::MIN_BALANCE)
         subject.touch_in(kings_cross)
       end
-      
+
       it "updates oystercard to be in journey" do
         expect(subject).to be_in_journey
       end
 
       it "remembers entry station" do
-        expect(subject.started_at).to eq kings_cross
+        expect(subject.current_journey.entry_station).to eq kings_cross
       end
     end
   end
 
   describe "#touch_out" do
-    # context "when errors" do 
+    # context "when errors" do
     #   it "raises error when not in journey" do
     #     message = "You are not in a journey"
 
@@ -92,37 +92,20 @@ describe Oystercard do
         subject.top_up(described_class::MIN_BALANCE)
         subject.touch_in(kings_cross)
       end
-      
-      it "updates oystercard to not be in journey" do
-        subject.touch_out(victoria)
-        expect(subject).not_to be_in_journey
-      end
 
       it "deducts fare from balance" do
         fare = described_class::MIN_BALANCE
         expect { subject.touch_out(victoria) }.to change { subject.balance }.by(-fare)
       end
 
-      it 'forgets entry station' do
+      it "stores the journey" do
+        previous_journey = subject.touch_out(victoria)
+        expect(subject.previous_journey).to eq previous_journey
+      end
+
+      it "updates oystercard to not be in journey" do
         subject.touch_out(victoria)
-        expect(subject.entry_station).to eq nil
-      end
-    end
-  end
-
-  describe "#add_journey" do
-    context "when no errors" do
-      before(:each) do
-        subject.top_up(described_class::MIN_BALANCE)
-        subject.touch_in(kings_cross)
-      end
-
-      it "stores journey on touch out" do
-        expect { subject.touch_out(victoria) }.to change { subject.journeys.count }.by(1)
-        
-        last_journey = subject.journeys.last
-        expect(last_journey[:entry]).to eq kings_cross
-        expect(last_journey[:exit]).to eq victoria
+        expect(subject).not_to be_in_journey
       end
     end
   end
