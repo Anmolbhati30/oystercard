@@ -1,5 +1,6 @@
 class Journey
   PENALTY_CHARGE = 6
+  MIN_CHARGE = 1
   attr_reader :start, :finish
 
   def initialize
@@ -16,7 +17,8 @@ class Journey
   end
 
   def fare
-    PENALTY_CHARGE
+    # return 0 if start.nil? && @finish.nil?
+    @start.nil? ^ @finish.nil? ? PENALTY_CHARGE : MIN_CHARGE
   end
 
 

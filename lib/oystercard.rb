@@ -29,9 +29,8 @@ class Oystercard
   end
 
   def touch_out(exit_station)
+    @journey.finish_at(exit_station)
     deduct(@journey.fare)
-    save_journey(exit_station)
-    @entry_station = nil
   end
 
   def in_journey?
