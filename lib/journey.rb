@@ -1,28 +1,24 @@
 class Journey
   PENALTY_CHARGE = 6
+  attr_reader :entry_station, :exit_station
+
   MIN_CHARGE = 1
-  attr_reader :start, :finish
 
-  def initialize
-    @start
-    @finish
+  def initialize(entry_station = nil)
+    @entry_station = entry_station
+    @exit_station
   end
 
-  def start_at(station)
-    @start = station
-  end
-  
-  def finish_at(station)
-    @finish = station
+  def finish(exit_station)
+    @exit_station = exit_station
+    return self
   end
 
   def fare
-    # return 0 if start.nil? && @finish.nil?
-    @start.nil? ^ @finish.nil? ? PENALTY_CHARGE : MIN_CHARGE
+    complete? ? MIN_CHARGE : PENALTY_CHARGE
   end
 
-
-  def create_record
-    return { start: @start, finish: @finish }
+  def complete?
+    @entry_station && @exit_station
   end
 end
