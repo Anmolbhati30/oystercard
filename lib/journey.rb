@@ -1,8 +1,7 @@
 class Journey
   PENALTY_CHARGE = 6
-  attr_reader :entry_station, :exit_station
-
   MIN_CHARGE = 1
+  attr_reader :entry_station, :exit_station
 
   def initialize(entry_station = nil)
     @entry_station = entry_station

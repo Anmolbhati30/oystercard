@@ -1,6 +1,6 @@
 require "station"
 
-describe Station do
+RSpec.describe Station do
   it "creates station with name" do
     station = Station.new("Kings Cross", 1)
     expect(station.name).to eq "Kings Cross"

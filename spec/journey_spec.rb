@@ -1,10 +1,10 @@
 require "journey"
 require "station"
 
-describe Journey do
+RSpec.describe Journey do
   let!(:kings_cross) { instance_double(Station, :zone => 1, name: "Kings Cross") }
   let!(:victoria) { instance_double(Station, :zone => 1, name: "Victoria") }
-  let!(:start_at_kings) {described_class.new(kings_cross)}
+  let!(:start_at_kings) { described_class.new(kings_cross) }
   describe "#initialize" do
     it "defaults entry station to nil" do
       expect(subject.entry_station).to eq nil
@@ -19,8 +19,6 @@ describe Journey do
       expect(subject.finish(victoria)).to eq subject
     end
   end
-
- 
 
   describe "#fare" do
     context "if no entry station" do

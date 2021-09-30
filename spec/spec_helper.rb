@@ -1,5 +1,6 @@
 require "journey"
 require "station"
+require "oystercard"
 
 # require "simplecov"
 # require "simplecov-console"
