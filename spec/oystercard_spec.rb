@@ -1,36 +1,38 @@
 require "oystercard"
 
 RSpec.describe Oystercard do
-  let(:journey_class) do
-    class_double("Journey").tap do |double|
-      stub_const("Journey", double, :transfer_nested_constants => true)
-    end
+  let!(:kings_cross) { instance_double(Station, :name => :kings_cross) }
+  let!(:victoria) { instance_double(Station, :name => :victoria) }
+
+  let!(:started_journey) {
+    instance_double(Journey,
+                    :entry_station => kings_cross)
+  }
+
+  before do
+    allow(started_journey).to receive(:finish).and_return(complete_journey)
   end
-
-  it "Stubs Journey consts" do
-    expect(journey_class::MIN_CHARGE).to eq Journey::MIN_CHARGE
-  end
-  # before(:each) do
-  #   stub_const("Journey", journey_class, :transfer_nested_constants => true)
-  # end
-  # stub_const("Journey", journey_class, :transfer_nested_constants => true)
-
-  # let(:subject) { described_class.new(journey_class) }
-
-  let(:kings_cross) { instance_double(Station, :name => :kings_cross) }
-  let(:victoria) { instance_double(Station, :name => :victoria) }
 
   let!(:complete_journey) {
     instance_double(Journey,
                     :entry_station => kings_cross,
-                    :exit_station => victoria)
+                    :exit_station => victoria,
+                    :fare => journey_class::MIN_CHARGE)
   }
 
-  # before(:all) do
-  #   allow(complete_journey).to receive_messages(finish: complete_journey)
-  #   # let!(:complete_journey_class) { class_double(Journey, :new => complete_journey) }
-  #   # let!(:station) { instance_double(Station, :zone => 1, id: :kings_cross)}
-  # end
+  let(:journey_class) do
+    class_double("Journey").tap do |double|
+      stub_const("Journey", double, :transfer_nested_constants => true)
+      allow(double).to receive(:new).and_return(started_journey)
+    end
+  end
+
+  let(:subject) { described_class.new(journey_class) }
+
+  it "Stubs Journey consts" do
+    expect(journey_class::MIN_CHARGE).to eq Journey::MIN_CHARGE
+  end
+
   describe "#initialize" do
     it "has an empty list of journeys" do
       expect(subject.instance_variable_get(:@journeys)).to eq []
@@ -120,24 +122,18 @@ RSpec.describe Oystercard do
       end
 
       it "deducts fare from balance" do
-        # stub_const("Journey", journey_class, :transfer_nested_constants => true)
         fare = journey_class::MIN_CHARGE
         expect { subject.touch_out(victoria) }.to change { subject.balance }.by(-fare)
       end
 
       it "stores the journey" do
-        # subject = described_class.new(journey_class)
-        allow(complete_journey).to receive_messages(finish: complete_journey)
-        # p complete_journey.finish(kings_cross)
         previous_journey = subject.touch_out(victoria)
         returned_previous = subject.previous_journey
-        p returned_previous
         expect(subject.previous_journey).to eq previous_journey
         expect(returned_previous.entry_station).to eq kings_cross
       end
 
       it "updates oystercard to not be in journey" do
-        # subject = described_class.new(journey_class)
         subject.touch_out(victoria)
         expect(subject).not_to be_in_journey
       end
